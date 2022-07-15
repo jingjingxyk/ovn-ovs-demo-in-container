@@ -1,0 +1,24 @@
+version: "3"
+services:
+    etcd:
+        image: quay.io/coreos/etcd:v3.5.0
+        ports:
+            - "2379:2379"  #for client requests,
+        #            - 2380:2380  #for peer communication
+        restart: always
+        container_name: etcd
+        environment:
+            - "ETCD_MAX_WALS=3"
+        volumes:
+            - ./etcd-data:/etcd-data
+        command:
+            - /bin/sh
+            - -c
+            - |
+                /usr/local/bin/etcd  \
+                --name s1 \
+                --data-dir /etcd-data \
+                --client-cert-auth  \
+                --listen-client-urls http://0.0.0.0:2379 \
+                --advertise-client-urls http://0.0.0.0:2379
+    # https://github.com/etcd-io/etcd/releases
